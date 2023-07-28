@@ -1,12 +1,12 @@
-name: build mlflow
+name: build mlflow-nfs
 
 on:
   workflow_dispatch:
   push:
     paths:
-      - .github/workflows/docker.yml
+      - .github/workflows/docker-nfs.yml
       - src/**
-      - .build/mlflow/**
+      - .build/nfs/**
 
 jobs:
   build:
@@ -25,6 +25,6 @@ jobs:
       uses: docker/build-push-action@v3
       with:
         context: "{{defaultContext}}:."
-        file: .build/mlflow/dockerfile
+        file: .build/nfs/dockerfile
         push: true
-        tags: marcelndeffo/tools:mlflow
+        tags: marcelndeffo/tools:mlflow-nfs

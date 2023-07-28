@@ -41,10 +41,16 @@ deployments(s):
 docker compose up -d
 ````
 
-- deploy `multi-az`:: replicates a production with S3
+- deploy `multi-az`:: replicates a production with artifacts stored in S3
 
 ````bash
 docker compose -f .deploy/compose/multi-az.yml up -d
+````
+
+- deploy `multi-az-nfs`:: replicates a production with artifacts stored in an NFS
+
+````bash
+docker compose -f .deploy/compose/nfs.yml up -d
 ````
 
 - deploy kubernetes [todo]

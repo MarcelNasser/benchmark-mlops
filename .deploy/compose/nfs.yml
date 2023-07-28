@@ -52,7 +52,10 @@ services:
       service: .base
       file: template.yml
     container_name: nfs
-    image: erichough/nfs-server
+    image: marcelndeffo/tools:mlfow-nfs
+    build:
+      context: ../..
+      dockerfile: .build/nfs/dockerfile
     ports:
       - "2049:2049"
     environment:
@@ -64,8 +67,8 @@ services:
           ipv4_address: 172.19.0.4
         mlflow-subnet-2:
           ipv4_address: 172.30.0.4
-    command:  >
-      sh -c "mkdir -p /data/mlflow && server /data --console-address ':9001'"
+    command: |
+        /data --console-address ':9001'
     cap_add:
       - SYS_ADMIN
 
