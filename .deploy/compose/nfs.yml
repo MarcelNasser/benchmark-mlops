@@ -48,10 +48,11 @@ services:
       file: multi-az.yml
 
   fs:
+    extends:
+      service: .base
+      file: template.yml
     container_name: nfs
-    image: marcelndeffo/tools:nfs-server
-    build:
-      context: ../../.build/nfs
+    image: erichough/nfs-server
     ports:
       - "2049:2049"
     environment:
