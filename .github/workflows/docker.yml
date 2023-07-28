@@ -25,6 +25,6 @@ jobs:
       uses: docker/build-push-action@v3
       with:
         context: "{{defaultContext}}:."
-        dockerfile: .build/mlflow/dockerfile
+        file: .build/mlflow/dockerfile
         push: true
         tags: marcelndeffo/tools:mlflow
