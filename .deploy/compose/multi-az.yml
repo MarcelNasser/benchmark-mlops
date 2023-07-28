@@ -1,0 +1,92 @@
+version: "3.5"
+
+services:
+  ml-1:
+    container_name: ml-1
+    extends:
+      service: .mlflow-s3
+      file: template.yml
+    extra_hosts:
+      - "minio:172.19.0.4"
+      - "postgres:172.19.0.3"
+    networks:
+      mlflow-subnet-1:
+        ipv4_address: 172.19.0.2
+    depends_on: [ pg, fs ]
+
+  ml-2:
+    container_name: ml-2
+    extends:
+      service: .mlflow-s3
+      file: template.yml
+    extra_hosts:
+      - "minio:172.30.0.4"
+      - "postgres:172.30.0.3"
+    networks:
+      mlflow-subnet-2:
+        ipv4_address: 172.30.0.2
+    depends_on: [ pg, fs ]
+
+
+  # load-balancer help to evaluate multi-AZ behavior
+  lb:
+    extends:
+      service: .lb
+      file: template.yml
+    networks:
+      mlflow-subnet-1:
+        ipv4_address: 172.19.0.5
+      mlflow-subnet-2:
+        ipv4_address: 172.30.0.5
+    extra_hosts:
+      - "ml-1:172.40.0.6"
+      - "ml-2:172.40.0.7"
+
+  pg:
+    extends:
+      service: .db
+      file: template.yml
+    volumes:
+      - db:/var/lib/postgresql/data
+    networks:
+      mlflow-subnet-1:
+        ipv4_address: 172.19.0.3
+      mlflow-subnet-2:
+        ipv4_address: 172.30.0.3
+
+  fs:
+    hostname: minio
+    container_name: minio
+    image: quay.io/minio/minio
+    ports:
+      - "9001:9001"
+      - "9000:9000"
+    environment:
+      MINIO_ROOT_USER: minio-access-key
+      MINIO_ROOT_PASSWORD: minio-secret-key
+    volumes:
+      - "fs:/data"
+    networks:
+      mlflow-subnet-1:
+        ipv4_address: 172.19.0.4
+      mlflow-subnet-2:
+        ipv4_address: 172.30.0.4
+    command: ["server", "/data --console-address ':9001'"]
+
+
+networks:
+  mlflow-subnet-1:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.19.0.0/24
+  mlflow-subnet-2:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.30.0.0/24
+
+
+volumes:
+  db:
+  fs:

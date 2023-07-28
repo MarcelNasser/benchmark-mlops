@@ -1,0 +1,43 @@
+version: "3.5"
+
+services:
+  ml:
+    container_name: ml
+    extends:
+      service: .mlflow
+      file: .deploy/compose/template.yml
+    volumes:
+      - fs:/data
+    ports:
+      - "5000:5000"
+    extra_hosts:
+      - "minio:172.19.0.4"
+      - "postgres:172.19.0.3"
+    networks:
+      mlflow-subnet:
+        ipv4_address: 172.19.0.2
+    depends_on: [ pg ]
+    environment:
+      DB: "postgresql://postgres:postgres@postgres:5432/postgres"
+
+  pg:
+    extends:
+      service: .db
+      file: .deploy/compose/template.yml
+    volumes:
+      - db:/var/lib/postgresql/data
+    networks:
+      mlflow-subnet:
+        ipv4_address: 172.19.0.3
+
+
+networks:
+  mlflow-subnet:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.19.0.0/24
+
+volumes:
+  db:
+  fs:
