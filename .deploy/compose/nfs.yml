@@ -48,16 +48,18 @@ services:
       file: multi-az.yml
 
   fs:
+    extends:
+      service: .base
+      file: template.yml
     container_name: nfs
-    image: marcelndeffo/tools:nfs-server
+    image: marcelndeffo/tools:mlfow-nfs
     build:
-      context: ../../.build/nfs
+      context: ../..
+      dockerfile: .build/nfs/dockerfile
     ports:
       - "2049:2049"
     environment:
-      DIR_DATA: '/data/mlflow'
       NFS_EXPORT_0: '/data/mlflow 172.19.0.0/24(rw,no_root_squash,subtree_check) 172.30.0.0/24(rw,no_root_squash,subtree_check)'
-#      NFS_EXPORT_1: '/home 172.19.0.0/24(rw,sync,no_root_squash) 172.30.0.0/24(rw,sync,no_root_squash)'
     volumes:
         - "fs:/data"
     networks:
@@ -65,7 +67,8 @@ services:
           ipv4_address: 172.19.0.4
         mlflow-subnet-2:
           ipv4_address: 172.30.0.4
-    command: ["server", "/data --console-address ':9001'"]
+    command: |
+        /data --console-address ':9001'
     cap_add:
       - SYS_ADMIN
 

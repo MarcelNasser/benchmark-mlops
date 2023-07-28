@@ -4,7 +4,7 @@ EXPOSE 2049
 
 ENV DIR_DATA=/data/mlflow
 
-ENV NFS_EXPORT_0='/data/mlflow 172.19.0.0/24(rw,no_subtree_check) 172.30.0.0/24(rw,no_subtree_check)'
+ENV NFS_EXPORT_0='$DIR_DATA 172.19.0.0/24(rw,no_subtree_check) 172.30.0.0/24(rw,no_subtree_check)'
 
 RUN mkdir -p $DIR_DATA
 
