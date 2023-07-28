@@ -1,5 +1,8 @@
 #!/usr/bin/env bash
 
+# very critical
+## scan env variables
+## spin the server in the proper configuration
 
 function error() {
   echo "$1" 2>&1

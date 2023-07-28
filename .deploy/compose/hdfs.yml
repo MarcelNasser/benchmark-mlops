@@ -14,23 +14,24 @@ services:
         ipv4_address: 172.19.0.2
     depends_on: [ pg, fs ]
     environment:
-      STORE: "/data"
-      NFS: "172.19.0.4:/data/mlflow/"
+      HDFS: "hdfs://hdfs:9870/data/mlflow/"
       DB: "postgresql://postgres:postgres@postgres:5432/postgres"
 
   ml-2:
     container_name: ml-2
     extends:
       service: .mlflow-hdfs
-      file: deploy/docker-compose/template.yml
-    ports:
-      - "5002:5000"
+      file: template.yml
+    extra_hosts:
+      - "hdfs:172.30.0.4"
+      - "postgres:172.30.0.3"
     networks:
       mlflow-subnet-2:
         ipv4_address: 172.30.0.2
-      nat-subnet:
-        ipv4_address: 172.40.0.7
-    depends_on: [ pg, hdfs ]
+    depends_on: [ pg, fs ]
+    environment:
+      HDFS: "hdfs://hdfs:9870/data/mlflow/"
+      DB: "postgresql://postgres:postgres@postgres:5432/postgres"
 
   # load-balancer help to evaluate multi-AZ behavior
   lb:
@@ -44,38 +45,56 @@ services:
       service: pg
       file: multi-az.yml
 
+  fs:
+    extends:
+      service: .hadoop
+      file: template.yml
+    hostname: namenode
+    command: ["hdfs", "namenode"]
+    ports:
+      - "9870:9870"
+    environment:
+        ENSURE_NAMENODE_DIR: "/tmp/hadoop-root/dfs/name"
+    networks:
+        mlflow-subnet-1:
+          ipv4_address: 172.19.0.4
+        mlflow-subnet-2:
+          ipv4_address: 172.30.0.4
+        hdfs-subnet:
+          ipv4_address: 172.40.0.2
+
   datanode:
     extends:
       service: .hadoop
-      file: deploy/docker-compose/template.yml
+      file: template.yml
     container_name: datanode
     command: ["hdfs", "datanode"]
     networks:
-      nat-subnet:
-        ipv4_address: 172.40.0.3
+        hdfs-subnet:
+          ipv4_address: 172.40.0.3
 
   resourcemanager:
     extends:
       service: .hadoop
-      file: deploy/docker-compose/template.yml
+      file: template.yml
     container_name: resourcemanager
     hostname: resourcemanager
     command: ["yarn", "resourcemanager"]
     ports:
        - "8088:8088"
     networks:
-      nat-subnet:
-        ipv4_address: 172.40.0.4
+        hdfs-subnet:
+          ipv4_address: 172.40.0.4
 
   nodemanager:
     extends:
       service: .hadoop
-      file: deploy/docker-compose/template.yml
+      file: template.yml
     container_name: nodemanager
     command: ["yarn", "nodemanager"]
     networks:
-      nat-subnet:
-        ipv4_address: 172.40.0.5
+        hdfs-subnet:
+          ipv4_address: 172.40.0.5
 
 
 networks:
@@ -89,6 +108,11 @@ networks:
     ipam:
       config:
         - subnet: 172.30.0.0/24
+  hdfs-subnet:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.40.0.0/24
 
 volumes:
   db:

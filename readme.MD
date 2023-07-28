@@ -1,10 +1,10 @@
 # MLOPS
 
-![example workflow](https://github.com/MarcelNasser/benchmark-mlops/actions/workflows/docker.yml/badge.svg)
+![example workflow](https://github.com/MarcelNasser/benchmark-mlops/actions/workflows/docker.yml/badge.svg)  ![example workflow](https://github.com/MarcelNasser/benchmark-mlops/actions/workflows/docker-nfs.yml/badge.svg) 
 
 ### assumption(s)
 
-bench the [deployment](https://mlflow.org/docs/latest/tracking.html) of open source `mlflow`.
+bench deployment of open source [mlflow](https://mlflow.org/docs/latest/tracking.html).
 
 bench carried with following remote file systems:
 
@@ -53,11 +53,17 @@ docker compose -f .deploy/compose/multi-az.yml up -d
 docker compose -f .deploy/compose/nfs.yml up -d
 ````
 
+- deploy `multi-az-hdfs`:: replicates a production with artifacts stored in a Hadoop cluster
+
+````bash
+docker compose -f .deploy/compose/hdfs.yml up -d
+````
+
 - deploy kubernetes [todo]
 
 
 ---
-**red flags:** 
+### red flags::
 
 **- destroy compose resources between deployment, to avoid collisions...**
 
