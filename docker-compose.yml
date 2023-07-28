@@ -5,7 +5,7 @@ services:
     container_name: ml
     extends:
       service: .mlflow
-      file: .deploy/docker-compose/template.yml
+      file: .deploy/compose/template.yml
     volumes:
       - fs:/data
     ports:
@@ -23,7 +23,7 @@ services:
   pg:
     extends:
       service: .db
-      file: .deploy/docker-compose/template.yml
+      file: .deploy/compose/template.yml
     volumes:
       - db:/var/lib/postgresql/data
     networks:
