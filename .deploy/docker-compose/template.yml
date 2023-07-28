@@ -1,0 +1,106 @@
+version: "3.5"
+
+services:
+
+  .base:
+    restart: always
+    deploy:
+      resources:
+        limits:
+          cpus: "0.2"
+          memory: "1500MB"
+    logging:
+      options:
+        max-size: "10m"
+        max-file: "50"
+
+  .hadoop:
+    extends:
+      service: .base
+    image: apache/hadoop:3
+    env_file:
+      - ../conf/hdfs/config
+
+
+  .db:
+    extends:
+      service: .base
+    container_name: postgres
+    image: postgres:alpine
+    environment:
+      POSTGRES_PASSWORD: postgres
+
+
+  .lb:
+    hostname: lb
+    extends:
+      service: .base
+    container_name: lb
+    image: nginx
+    ports:
+      - "5000:80"
+    volumes:
+      - "../conf/nginx/nginx.conf:/etc/nginx/conf.d/default.conf:ro"
+    healthcheck:
+#      test: curl ml-1:5000 || exit 1; curl ml-2:5000|| exit 1
+      test: curl lb || exit 1
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 20s
+
+
+  .mlflow:
+    extends:
+      service: .base
+    hostname: mlflow
+    image: marcelndeffo/tools:mlfow
+    build:
+      context: ../..
+      dockerfile: .build/mlflow/dockerfile
+    healthcheck:
+      test: curl mlflow:5000 || exit 1
+      interval: 20s
+      timeout: 5s
+      retries: 3
+      start_period: 20s
+
+  .mlflow-nfs:
+    extends:
+      service: .mlflow
+    cap_add:
+      - NET_ADMIN
+      - SYS_ADMIN
+
+
+  .mlflow-s3:
+    extends:
+      service: .mlflow
+    environment:
+      AWS_ACCESS_KEY_ID: minio-access-key
+      AWS_SECRET_ACCESS_KEY: minio-secret-key
+      MLFLOW_S3_ENDPOINT_URL: http://minio:9000
+      S3_ENDPOINT_URL: http://minio:9000
+      S3: "s3://ml-artifacts/mlflow"
+      DB: "postgresql://postgres:postgres@postgres:5432/postgres"
+
+  .mlflow-hdfs:
+    extends:
+      service: .mlflow
+    environment:
+      HDFS: "hdfs://hdfs:9870/usr/mlflow"
+      DB: "postgresql://postgres:postgres@postgres:5432/postgres"
+
+  .monitoring:
+    extends:
+      service: .base
+    container_name: monitoring
+    image: gcr.io/cadvisor/cadvisor:v0.36.0
+    ports:
+      - "3000:8080"
+    volumes:
+      - "/var/lib/docker/:/var/lib/docker:ro"
+      - "/dev/disk/:/dev/disk:ro"
+      - "/sys:/sys:ro"
+      - "/var/run:/var/run:ro"
+      - "/:/rootfs:ro"

@@ -1,0 +1,87 @@
+version: "3.5"
+
+services:
+  ml-1:
+    container_name: ml-1
+    extends:
+      service: .mlflow-nfs
+      file: template.yml
+    extra_hosts:
+      - "nfs:172.19.0.4"
+      - "postgres:172.19.0.3"
+    networks:
+      mlflow-subnet-1:
+        ipv4_address: 172.19.0.2
+    depends_on: [ pg, fs ]
+    environment:
+      STORE: "/data"
+      NFS: "172.19.0.4:/data/mlflow/"
+      DB: "postgresql://postgres:postgres@postgres:5432/postgres"
+
+  ml-2:
+    container_name: ml-2
+    extends:
+      service: .mlflow-nfs
+      file: template.yml
+    extra_hosts:
+      - "nfs:172.30.0.4"
+      - "postgres:172.30.0.3"
+    networks:
+      mlflow-subnet-2:
+        ipv4_address: 172.30.0.2
+    depends_on: [ pg, fs ]
+    environment:
+      STORE: "/data"
+      NFS: "172.30.0.4:/data/mlflow/"
+      DB: "postgresql://postgres:postgres@postgres:5432/postgres"
+
+  # load-balancer help to evaluate multi-AZ behavior
+  lb:
+    extends:
+      service: lb
+      file: multi-az.yml
+
+
+  pg:
+    extends:
+      service: pg
+      file: multi-az.yml
+
+  fs:
+    container_name: nfs
+    image: marcelndeffo/tools:nfs-server
+    build:
+      context: ../../.build/nfs
+    ports:
+      - "2049:2049"
+    environment:
+      DIR_DATA: '/data/mlflow'
+      NFS_EXPORT_0: '/data/mlflow 172.19.0.0/24(rw,no_root_squash,subtree_check) 172.30.0.0/24(rw,no_root_squash,subtree_check)'
+#      NFS_EXPORT_1: '/home 172.19.0.0/24(rw,sync,no_root_squash) 172.30.0.0/24(rw,sync,no_root_squash)'
+    volumes:
+        - "fs:/data"
+    networks:
+        mlflow-subnet-1:
+          ipv4_address: 172.19.0.4
+        mlflow-subnet-2:
+          ipv4_address: 172.30.0.4
+    command: ["server", "/data --console-address ':9001'"]
+    cap_add:
+      - SYS_ADMIN
+
+networks:
+  mlflow-subnet-1:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.19.0.0/24
+  mlflow-subnet-2:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.30.0.0/24
+
+
+volumes:
+  db:
+  fs:

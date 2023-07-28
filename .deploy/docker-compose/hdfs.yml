@@ -1,0 +1,94 @@
+version: "3.5"
+
+services:
+  ml-1:
+    container_name: ml-1
+    extends:
+      service: .mlflow-hdfs
+      file: template.yml
+    extra_hosts:
+      - "hdfs:172.19.0.4"
+      - "postgres:172.19.0.3"
+    networks:
+      mlflow-subnet-1:
+        ipv4_address: 172.19.0.2
+    depends_on: [ pg, fs ]
+    environment:
+      STORE: "/data"
+      NFS: "172.19.0.4:/data/mlflow/"
+      DB: "postgresql://postgres:postgres@postgres:5432/postgres"
+
+  ml-2:
+    container_name: ml-2
+    extends:
+      service: .mlflow-hdfs
+      file: deploy/docker-compose/template.yml
+    ports:
+      - "5002:5000"
+    networks:
+      mlflow-subnet-2:
+        ipv4_address: 172.30.0.2
+      nat-subnet:
+        ipv4_address: 172.40.0.7
+    depends_on: [ pg, hdfs ]
+
+  # load-balancer help to evaluate multi-AZ behavior
+  lb:
+    extends:
+      service: lb
+      file: multi-az.yml
+
+
+  pg:
+    extends:
+      service: pg
+      file: multi-az.yml
+
+  datanode:
+    extends:
+      service: .hadoop
+      file: deploy/docker-compose/template.yml
+    container_name: datanode
+    command: ["hdfs", "datanode"]
+    networks:
+      nat-subnet:
+        ipv4_address: 172.40.0.3
+
+  resourcemanager:
+    extends:
+      service: .hadoop
+      file: deploy/docker-compose/template.yml
+    container_name: resourcemanager
+    hostname: resourcemanager
+    command: ["yarn", "resourcemanager"]
+    ports:
+       - "8088:8088"
+    networks:
+      nat-subnet:
+        ipv4_address: 172.40.0.4
+
+  nodemanager:
+    extends:
+      service: .hadoop
+      file: deploy/docker-compose/template.yml
+    container_name: nodemanager
+    command: ["yarn", "nodemanager"]
+    networks:
+      nat-subnet:
+        ipv4_address: 172.40.0.5
+
+
+networks:
+  mlflow-subnet-1:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.19.0.0/24
+  mlflow-subnet-2:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.30.0.0/24
+
+volumes:
+  db:
