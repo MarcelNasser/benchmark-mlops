@@ -13,11 +13,12 @@ we investigate the following:
 
 **" mlflow requires a remote deployment to be adopted by ML teams "**
 
-**" but, you don't want to waste days to deploy and test. and pay expensive infrastructure. "**
+**" but you have very little time to investigate details of mlflow deployment. "**
 
 **" you want to know in 10 minutes, how a remote mlflow will work for you. "**
 
 ---
+
 ## assumption(s)
 
 bench deployment(s) of open source [mlflow](https://mlflow.org/docs/latest/tracking.html).
