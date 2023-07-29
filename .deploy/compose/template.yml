@@ -14,14 +14,6 @@ services:
         max-size: "10m"
         max-file: "50"
 
-  .hadoop:
-    extends:
-      service: .base
-    image: apache/hadoop:3
-    env_file:
-      - ../conf/hdfs/config
-
-
   .db:
     extends:
       service: .base
@@ -42,8 +34,7 @@ services:
     volumes:
       - "../conf/nginx/nginx.conf:/etc/nginx/conf.d/default.conf:ro"
     healthcheck:
-#      test: curl ml-1:5000 || exit 1; curl ml-2:5000|| exit 1
-      test: curl lb || exit 1
+      test: curl ml-1:5000 || exit 1; curl ml-2:5000|| exit 1
       interval: 10s
       timeout: 5s
       retries: 3
@@ -54,7 +45,7 @@ services:
     extends:
       service: .base
     hostname: mlflow
-    image: marcelndeffo/tools:mlfow
+    image: marcelndeffo/tools:mlflow
     build:
       context: ../..
       dockerfile: .build/mlflow/dockerfile
@@ -72,7 +63,6 @@ services:
       - NET_ADMIN
       - SYS_ADMIN
 
-
   .mlflow-s3:
     extends:
       service: .mlflow
@@ -82,13 +72,6 @@ services:
       MLFLOW_S3_ENDPOINT_URL: http://minio:9000
       S3_ENDPOINT_URL: http://minio:9000
       S3: "s3://ml-artifacts/mlflow"
-      DB: "postgresql://postgres:postgres@postgres:5432/postgres"
-
-  .mlflow-hdfs:
-    extends:
-      service: .mlflow
-    environment:
-      HDFS: "hdfs://hdfs:9870/usr/mlflow"
       DB: "postgresql://postgres:postgres@postgres:5432/postgres"
 
   .monitoring:

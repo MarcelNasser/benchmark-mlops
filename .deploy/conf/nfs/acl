@@ -1,0 +1,1 @@
+/data/mlflow 172.19.0.0/24(rw,no_root_squash,subtree_check) 172.30.0.0/24(rw,no_root_squash,subtree_check)

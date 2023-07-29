@@ -1,5 +1,8 @@
 #!/usr/bin/env bash
 
+# very critical
+## scan env variables
+## spin the server in the proper configuration
 
 function error() {
   echo "$1" 2>&1
@@ -41,15 +44,6 @@ if [ -n "$NFS" -a -n "$STORE" ]; then
   mlflow server --backend-store-uri "$DB" \
                 --artifacts-destination file://"$STORE" \
                 --host "$HOST" --port "$PORT" && exit 0 || exit 1
-fi
-
-#hdfs
-if [ -n "$HDFS" ]; then
-  echo "remote fs: hdfs"
-  mlflow server  \
-    --host "$HOST" --port "$PORT" \
-    --backend-store-uri "$DB" \
-    --artifacts-destination "$HDFS" && exit 0 || exit 1
 fi
 
 #finally
