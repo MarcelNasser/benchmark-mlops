@@ -52,7 +52,7 @@ services:
       service: .base
       file: template.yml
     container_name: nfs
-    image: marcelndeffo/tools:mlfow-nfs
+    image: marcelndeffo/tools:nfs
     build:
       context: ../..
       dockerfile: .build/nfs/dockerfile

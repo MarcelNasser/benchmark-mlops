@@ -27,7 +27,7 @@ function start() {
 
 function stop() {
   assumption-bin
-  delete
+  tear
   minikube stop
 }
 
