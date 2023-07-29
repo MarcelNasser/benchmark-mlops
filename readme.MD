@@ -2,9 +2,25 @@
 
 ![example workflow](https://github.com/MarcelNasser/benchmark-mlops/actions/workflows/docker.yml/badge.svg)  ![example workflow](https://github.com/MarcelNasser/benchmark-mlops/actions/workflows/docker-nfs.yml/badge.svg) 
 
-### assumption(s)
+---
+## statement(s)
 
-bench deployment of open source [mlflow](https://mlflow.org/docs/latest/tracking.html).
+we investigate the following:
+
+**" ML experiments are hardly reproducible without automatic tracking "**
+
+**" mlflow is the best mlops tool for tracking ML experiments "**
+
+**" mlflow requires a remote deployment to be adopted by ML teams "**
+
+**" but, you don't want to waste days to deploy and test. and pay expensive infrastructure. "**
+
+**" you want to know in 10 minutes, how a remote mlflow will work for you. "**
+
+---
+## assumption(s)
+
+bench deployment(s) of open source [mlflow](https://mlflow.org/docs/latest/tracking.html).
 
 bench carried with following remote file systems:
 
@@ -15,55 +31,30 @@ bench carried with following remote file systems:
 
 
 ---
-### deployment(s)
 
-to walkthrough deployments, use a workflow like this:
-
-`````
-deploy A => test A => destroy A => deploy B => test B => destroy B => (...)
-`````
-all deployments are served on port 5000 =>> [localhost:5000](http://localhost:5000)
-
-we wrote a basic training [test](src/tests/training.py). add more tests to investigate further the performance. 
-
-````bash
-time python -m unittest src/tests/training.py 2>/dev/null
-````
+## deployment(s)
 
 
-deployments(s):
+| deployment   | filesystem | database | api        | replicas |
+|--------------|------------|----------|------------|----------|
+| k8s          | S3         | postgres | kubernetes | 1+       |
+| local        | local      | postgres | docker     | 1        |
+| single-az    | S3         | postgres | docker     | 1        |
+| multi-az     | S3         | postgres | docker     | 2        |
+| multi-az-nfs | nfs        | postgres | docker     | 2        |
 
-- deploy `dev`:: single instance with local disk
 
-````bash
-docker compose up -d
-````
-
-- deploy `multi-az`:: replicates a production with artifacts stored in S3
-
-````bash
-docker compose -f .deploy/compose/multi-az.yml up -d
-````
-
-- deploy `multi-az-nfs`:: replicates a production with artifacts stored in an NFS
-
-````bash
-docker compose -f .deploy/compose/nfs.yml up -d
-````
-
-- deploy kubernetes [todo]
-
+see [doc](.deploy/readme.MD) for addition details.
 
 ---
-### red flags::
 
-**- destroy compose resources between deployment, to avoid collisions...**
+## test(s)
 
-```bash
-docker compose -f compose_file down
-```
+doc your test campaign according to your needs.
 
-**- wrong arguments `mlflow server [args]` can corrupt remote database.**
+we wrote basic tests to check the health of deployment.
+
+see the [doc](src/readme.MD) for addition details.
 
 
 

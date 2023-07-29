@@ -1,4 +1,4 @@
-name: build mlflow-nfs
+name: build nfs
 
 on:
   workflow_dispatch:
@@ -27,4 +27,4 @@ jobs:
         context: "{{defaultContext}}:."
         file: .build/nfs/dockerfile
         push: true
-        tags: marcelndeffo/tools:mlflow-nfs
+        tags: marcelndeffo/tools:nfs
