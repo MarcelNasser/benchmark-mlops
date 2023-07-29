@@ -1,7 +1,7 @@
 import unittest
 import io
 import boto3
-from src.shared.utils import check_bucket
+from src.shared.bucket import check_bucket
 
 
 class TestS3(unittest.TestCase):

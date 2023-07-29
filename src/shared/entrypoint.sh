@@ -25,7 +25,7 @@ fi
 #S3
 if [ -n "$MLFLOW_S3_ENDPOINT_URL" -a -n "$S3" ]; then
    echo "+ remote fs: s3"
-   "$root_dir/utils.py" && \
+   "$root_dir/bucket.py" && \
    mlflow server  \
             --host "$HOST" --port "$PORT" \
             --backend-store-uri "$DB" \
