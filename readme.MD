@@ -10,10 +10,8 @@ bench carried with following remote file systems:
 
 | fs   | branding  |
 |------|-----------|
-| hdfs | Hadoop    | 
 | nfs  | Filestore |
 | kv   | AWS S3    |
-
 
 
 ---
@@ -51,12 +49,6 @@ docker compose -f .deploy/compose/multi-az.yml up -d
 
 ````bash
 docker compose -f .deploy/compose/nfs.yml up -d
-````
-
-- deploy `multi-az-hdfs`:: replicates a production with artifacts stored in a Hadoop cluster
-
-````bash
-docker compose -f .deploy/compose/hdfs.yml up -d
 ````
 
 - deploy kubernetes [todo]

@@ -46,15 +46,6 @@ if [ -n "$NFS" -a -n "$STORE" ]; then
                 --host "$HOST" --port "$PORT" && exit 0 || exit 1
 fi
 
-#hdfs
-if [ -n "$HDFS" ]; then
-  echo "remote fs: hdfs"
-  mlflow server  \
-    --host "$HOST" --port "$PORT" \
-    --backend-store-uri "$DB" \
-    --artifacts-destination "$HDFS" && exit 0 || exit 1
-fi
-
 #finally
 echo "x no remote fs"
 mlflow server  \
