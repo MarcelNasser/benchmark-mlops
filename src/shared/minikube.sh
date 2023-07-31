@@ -33,7 +33,6 @@ function start() {
   assumption-bin
   echo "> spinning minikube"
   minikube start
-  deploy
 }
 
 function stop() {
@@ -45,13 +44,14 @@ function stop() {
 function deploy() {
   assumption-bin
   echo "> updating k8s"
-  kubectl apply -f "$k8s_path"
+  target="$1"
+  kubectl apply -f "$k8s_path/${target:-minikube}"
 }
 
 function tear() {
   assumption-bin
   echo "> deleting k8s"
-  kubectl delete -f "$k8s_path"
+  kubectl delete -f "$k8s_path/${target:-minikube}"
 }
 
 function open() {
@@ -88,8 +88,8 @@ function assumption-svc() {
 
 case "$1" in
   start) start;;
-  deploy|update) deploy;;
-  tear|delete) tear;;
+  deploy|update) deploy "$2";;
+  tear|delete) tear "$2";;
   open) open;;
   stop) stop;;
   *) usage && exit 1;;
