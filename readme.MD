@@ -13,17 +13,19 @@ we investigate the following:
 
 **" mlflow requires a remote deployment to be adopted by ML teams "**
 
-**" but you have very little time to investigate details of mlflow deployment. "**
-
-**" you want to know in 10 minutes, how a remote mlflow will work for you. "**
-
 ---
 
 ## assumption(s)
 
-bench deployment(s) of open source [mlflow](https://mlflow.org/docs/latest/tracking.html).
+your beloved team lack observability (a-k-a tracking/logging) on ML experiments. 
 
-bench carried with following remote file systems:
+you desire to investigate thoroughly `mlflow` as the tool of choice, the official documentation of [project](https://mlflow.org/docs/latest/tracking.html).
+
+the documentation does not demonstrate the tool can really reach the observability promise. As it is not clear, `mlflow` can be deployed remotely and matches production-like standards. 
+
+bench yourself the deployment in 10 minutes, and assess all of that.
+
+we run deployment of `mlflow` on those remote file systems:
 
 | fs   | branding  |
 |------|-----------|
@@ -45,7 +47,7 @@ bench carried with following remote file systems:
 | multi-az-nfs | nfs        | postgres | docker     | 2        |
 
 
-see [doc](.deploy/readme.MD) for addition details.
+see deployment [doc](.deploy/readme.MD) for addition details.
 
 ---
 
@@ -55,7 +57,7 @@ doc your test campaign according to your needs.
 
 we wrote basic tests to check the health of deployment.
 
-see the [doc](src/readme.MD) for addition details.
+see the test [doc](src/readme.MD) for addition details.
 
 
 
