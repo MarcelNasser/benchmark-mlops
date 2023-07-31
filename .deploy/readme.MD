@@ -9,7 +9,9 @@
 docker compose -f compose_file down
 ```
 
-**- wrong arguments `mlflow server [args]` can corrupt remote database.**
+**- wrong arguments `mlflow server [args]` can corrupt remote database. it the main weakness of mlflow deployments.**
+
+checkout the startup [scripts](../src/shared) to better understand the workaround done.
 
 ---
 <br>
@@ -108,6 +110,8 @@ docker compose -f .deploy/compose/multi-az.yml up -d
 ````bash
 #spin minikube
 src/shared/minikube.sh start
+#deploy services
+src/shared/minikube.sh deploy
 #forward port(s) to localhost
 src/shared/minikube.sh open
 ````

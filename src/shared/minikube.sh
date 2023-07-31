@@ -1,21 +1,32 @@
 #!/usr/bin/env bash
 
-k8s_path=$(realpath "$(dirname "$0")"/../../.deploy/k8s)
-pids=()
-
 function error() {
   echo "$*" 2>&1 && exit 1
 
 }
 
+
+
+k8s_path=${k8s_path:-$(realpath "$(dirname "$0")"/../../.deploy/k8s)}
+
+[ ! -d "$k8s_path" ] && error "missing directory '$k8s_path'"
+
+pids=()
+
+
 function usage() {
   echo -e \
-"- start minikube and deploy services::
-$ src/shared/minikube.sh start
-- update services::
-$ src/shared/minikube.sh update
-- open a tunnel to minikube cluster and forward ports::
-$ src/shared/minikube.sh open"
+"start minikube and deploy services::
+
+src/shared/minikube.sh [cmd]
+
+cmds:
+* start: start minikube
+* deploy: deploy/update services
+* open: open ssh tunnel and forwards ports of ml (5000) service and s3 (9000)
+* tear: destroy services
+* stop: stop minikube
+"
 }
 
 function start() {
