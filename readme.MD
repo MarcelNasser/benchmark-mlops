@@ -53,9 +53,9 @@ see deployment [doc](.deploy/readme.MD) for addition details.
 
 ## test(s)
 
-doc your test campaign according to your needs.
+build your test campaign according to your team needs.
 
-we wrote basic tests to check the health of deployment.
+we wrote basic tests to check the health of the deployment.
 
 see the test [doc](src/readme.MD) for addition details.
 
