@@ -1,8 +1,6 @@
 # Test Setup
 
-### Tests
-
-testcase(s):
+### Testcase(s):
 
 - **test S3**: 
   - desc: check if a bucket 'mlflow' is present in S3 service (minio).
