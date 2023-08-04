@@ -16,13 +16,14 @@ checkout the startup [scripts](../src/shared) to better understand the workaroun
 ---
 <br>
 
-| deployment   | filesystem | replicas | command line                                       |
-|--------------|------------|----------|----------------------------------------------------|
-| k8s          | S3         | 1+       | src/shared/minikube.sh start                       |
-| local        | local      | 1        | docker compose -f .deploy/compose/single-az.yml up |
-| single-az    | S3         | 1        | docker compose -f .deploy/compose/single-az.yml up |
-| multi-az     | S3         | 2        | docker compose -f .deploy/compose/single-az.yml up |
-| multi-az-nfs | nfs        | 2        | docker compose -f .deploy/compose/single-az.yml up |
+| deployment      | filesystem | replicas | command line                                             |
+|-----------------|------------|----------|----------------------------------------------------------|
+| k8s             | S3         | 1+       | src/shared/minikube.sh start                             |
+| local           | local      | 1        | docker compose -f .deploy/compose/local.yml up           |
+| single-az       | S3         | 1        | docker compose -f .deploy/compose/single-az.yml up       |
+| single-az-auth0 | S3         | 1        | docker compose -f .deploy/compose/single-az-auth0.yml up |
+| multi-az        | S3         | 2        | docker compose -f .deploy/compose/multi-az.yml up        |
+| multi-az-nfs    | nfs        | 2        | docker compose -f .deploy/compose/multi-az-nfs.yml up    |
 
 <br>
 
@@ -73,6 +74,21 @@ docker compose -f .deploy/compose/single-az.yml up -d
 
 ---
 
+### deploy `single-az-auth0`:: 
+- *desc*: spin a development mlflow with S3-like filesystem with authentication 2 additional microserveces:
+  - authentication service (reverse proxying auth0 + MLFlow UI)
+  - logging service (reverse proxying MLFlow run Api + MlFlow artifacts Api)
+- *scenarios*:
+  1. assess the behavior of `mlflow` with authentication
+  2. assess access control of `mlflow` endpoints
+  3. assess authentication with [auth0](../.env.tmpl)
+  4. assess deployment of auth0 with a reverse [proxy](../src/reverse-proxy) 
+
+````bash
+docker compose -f .deploy/compose/single-az-auth0.yml up -d
+````
+
+---
 ### deploy `multi-az`:: 
 - *desc*: replicates a production with artifacts stored in S3
 - *scenarios*:

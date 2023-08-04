@@ -42,10 +42,9 @@ $ docker compose -f .deploy/compose/single-az.yml up -d
 
 ````bash
 #scenario: minikube is not started
-##use 'update' command to update services
 $ src/shared/minikube.sh start
 #scenario: minikube is started
-$ src/shared/minikube.sh update
+$ src/shared/minikube.sh deploy
 ````
 then, forward ports:
 ````bash
@@ -57,7 +56,7 @@ $ src/shared/minikube.sh open
 ````bash
 #adapt k8s manifests to your cluster
 #then deploy
-$ kubectl apply -f .deploy/k8s
+$ kubectl apply -f .deploy/k8s/production
 ````
 then, forward ports:
 ````bash

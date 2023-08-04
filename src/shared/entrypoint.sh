@@ -19,7 +19,7 @@ root_dir=$(realpath "$(dirname "$0")")
 if [ -z "$DB" ]; then
   echo "x no remote storage.."
   mlflow server  \
-    --host "$HOST" --port "$PORT"
+    --host "$HOST" --port "$PORT" --gunicorn-opts "--log-level debug"
 fi
 
 #S3
@@ -29,7 +29,7 @@ if [ -n "$MLFLOW_S3_ENDPOINT_URL" -a -n "$S3" ]; then
    mlflow server  \
             --host "$HOST" --port "$PORT" \
             --backend-store-uri "$DB" \
-            --artifacts-destination "$S3" && exit 0 || exit 1
+            --artifacts-destination "$S3" --gunicorn-opts "--log-level debug" && exit 0 || exit 1
 fi
 
 #nfs
@@ -43,11 +43,11 @@ if [ -n "$NFS" -a -n "$STORE" ]; then
   echo "" > /data/hello-world || error "nfs mount failed :(";
   mlflow server --backend-store-uri "$DB" \
                 --artifacts-destination file://"$STORE" \
-                --host "$HOST" --port "$PORT" && exit 0 || exit 1
+                --host "$HOST" --port "$PORT" --gunicorn-opts "--log-level debug" && exit 0 || exit 1
 fi
 
 #finally
 echo "x no remote fs"
 mlflow server  \
     --host "$HOST" --port "$PORT" \
-    --backend-store-uri "$DB"
+    --backend-store-uri "$DB" --gunicorn-opts "--log-level debug"

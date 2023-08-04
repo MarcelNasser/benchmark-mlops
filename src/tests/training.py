@@ -8,6 +8,7 @@ from sklearn.ensemble import RandomForestRegressor
 
 
 class TestMlFlow(unittest.TestCase):
+
     mlflow.set_tracking_uri("http://localhost:5000")
 
     def setUp(self) -> None:
