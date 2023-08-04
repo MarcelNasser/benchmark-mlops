@@ -31,6 +31,7 @@ jobs:
       id: docker_build
       uses: docker/build-push-action@v3
       with:
-        context: "{{defaultContext}}:.build/${{ matrix.svc }}"
+        context: "{{defaultContext}}:."
+        file: ".build/${{ matrix.svc }}/dockerfile"
         push: true
         tags: marcelndeffo/tools:${{ matrix.tag }}
