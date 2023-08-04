@@ -40,9 +40,8 @@ def check_bucket():
         client.create_bucket(Bucket=bucket_name)
     except client.exceptions.BucketAlreadyOwnedByYou:
         pass
-    except botocore.exceptions as e:
+    except botocore.exceptions:
         logger.info('cannot read bucket')
-        logger.error(e)
     except Exception:
         raise
     finally:

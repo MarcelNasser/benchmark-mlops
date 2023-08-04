@@ -16,13 +16,13 @@ checkout the startup [scripts](../src/shared) to better understand the workaroun
 ---
 <br>
 
-| deployment   | filesystem | replicas | command line                                       |
-|--------------|------------|----------|----------------------------------------------------|
-| k8s          | S3         | 1+       | src/shared/minikube.sh start                       |
-| local        | local      | 1        | docker compose -f .deploy/compose/single-az.yml up |
-| single-az    | S3         | 1        | docker compose -f .deploy/compose/single-az.yml up |
-| multi-az     | S3         | 2        | docker compose -f .deploy/compose/single-az.yml up |
-| multi-az-nfs | nfs        | 2        | docker compose -f .deploy/compose/single-az.yml up |
+| deployment   | filesystem | replicas | command line                                          |
+|--------------|------------|----------|-------------------------------------------------------|
+| k8s          | S3         | 1+       | src/shared/minikube.sh start                          |
+| local        | local      | 1        | docker compose -f .deploy/compose/local.yml up        |
+| single-az    | S3         | 1        | docker compose -f .deploy/compose/single-az.yml up    |
+| multi-az     | S3         | 2        | docker compose -f .deploy/compose/multi-az.yml up     |
+| multi-az-nfs | nfs        | 2        | docker compose -f .deploy/compose/multi-az-nfs.yml up |
 
 <br>
 

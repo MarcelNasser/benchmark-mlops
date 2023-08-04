@@ -1,13 +1,52 @@
 version: "3.5"
 
 services:
+
+  ot:
+    container_name: ot
+    extends:
+      service: .base
+      file: template.yml
+    ports:
+      - "8080:8080"
+    image: marcelndeffo/builds:mlflow-auth0
+    build:
+      context: ../..
+      dockerfile: .build/mlflow-auth0/dockerfile
+    volumes:
+      - "../../.env:/run/.env:ro"
+    networks:
+      mlflow-subnet:
+        ipv4_address: 172.19.0.5
+    hostname: login
+    extra_hosts:
+      - "mlflow:172.19.0.2"
+
+  lg:
+    container_name: lg
+    extends:
+      service: .base
+      file: template.yml
+    ports:
+      - "5000:9000"
+    image: marcelndeffo/builds:mlflow-api
+    build:
+      context: ../..
+      dockerfile: .build/mlflow-api/dockerfile
+    environment:
+      MLFLOW_HOST: "http://mlflow:5000"
+    networks:
+      mlflow-subnet:
+        ipv4_address: 172.19.0.6
+    hostname: login
+    extra_hosts:
+      - "mlflow:172.19.0.2"
+
   ml:
     container_name: ml
     extends:
       service: .mlflow-s3
       file: template.yml
-    ports:
-      - "5000:5000"
     extra_hosts:
       - "minio:172.19.0.4"
       - "postgres:172.19.0.3"
