@@ -1,6 +1,6 @@
 # MLOPS
 
-![example workflow](https://github.com/MarcelNasser/benchmark-mlops/actions/workflows/docker.yml/badge.svg)  ![example workflow](https://github.com/MarcelNasser/benchmark-mlops/actions/workflows/docker-nfs.yml/badge.svg) 
+![example workflow](https://github.com/MarcelNasser/benchmark-mlops/actions/workflows/docker.yml/badge.svg)
 
 ---
 ## statement(s)
