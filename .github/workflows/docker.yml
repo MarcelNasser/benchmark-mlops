@@ -1,4 +1,4 @@
-name: build mlflow
+name: build docker(s)
 
 on:
   workflow_dispatch:
@@ -11,6 +11,13 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        include:
+          - { svc: "mlflow",  tag: "mlflow" }
+          - { svc: "nfs",  tag: "nfs" }
+          - { svc: "mlflow-auth0",  tag: "mlflow-auth0" }
+          - { svc: "mlflow-api",  tag: "mlflow-api" }
     steps:
     - uses: actions/checkout@v3
     - name: Set up Docker Buildx
@@ -24,7 +31,6 @@ jobs:
       id: docker_build
       uses: docker/build-push-action@v3
       with:
-        context: "{{defaultContext}}:."
-        file: .build/mlflow/dockerfile
+        context: "{{defaultContext}}:.build/${{ matrix.svc }}"
         push: true
-        tags: marcelndeffo/tools:mlflow
+        tags: marcelndeffo/tools:${{ matrix.tag }}

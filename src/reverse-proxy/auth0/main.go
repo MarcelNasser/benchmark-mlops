@@ -2,6 +2,7 @@ package main
 
 import (
     "log"
+    "github.com/gin-gonic/gin"
     "net/http"
  	"github.com/joho/godotenv"
 	"github.com/MarcelNasser/benchmark-mlops/reverse-proxy/auth0/platform/authenticator"
@@ -10,6 +11,7 @@ import (
 
 
 func main() {
+    gin.SetMode(gin.ReleaseMode)
     //check .env present
 	if err := godotenv.Load(); err != nil {
 		log.Fatalf("Failed to load the env vars: %v", err)
