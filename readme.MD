@@ -49,6 +49,11 @@ we run deployment of `mlflow` on those remote file systems:
 
 see deployment [doc](.deploy/readme.MD) for addition details.
 
+Basically, do this:
+````bash
+docker compose -f .deploy/compose/single-az.yml up -d
+````
+
 ---
 
 ## test(s)
@@ -58,6 +63,30 @@ build your test campaign according to your team needs.
 we wrote basic tests to check the health of the deployment.
 
 see the test [doc](src/readme.MD) for addition details.
+
+
+- Basically, add those 3 lines at entry of your training script, **after deploying the server**:
+
+````python
+import mlflow
+
+# set server URL
+mlflow.set_tracking_uri("http://localhost:5000")
+
+# start logging
+mlflow.autolog()
+````
+
+
+- Quick the training like:
+
+
+````
+python -m unittest src/tests/*py
+````
+
+- Follow-up in the U.I.: http://localhost:5000
+
 
 
 
