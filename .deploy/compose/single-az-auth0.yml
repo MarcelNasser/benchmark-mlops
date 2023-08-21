@@ -11,7 +11,7 @@ services:
       file: template.yml
     ports:
       - "8080:8080"
-    image: marcelndeffo/builds:mlflow-auth0
+    image: marcelndeffo/tools:mlflow-auth0
     build:
       context: ../..
       dockerfile: .build/mlflow-auth0/dockerfile
@@ -35,7 +35,7 @@ services:
       file: template.yml
     ports:
       - "5000:9000"
-    image: marcelndeffo/builds:mlflow-api
+    image: marcelndeffo/tools:mlflow-api
     build:
       context: ../..
       dockerfile: .build/mlflow-api/dockerfile
@@ -47,6 +47,24 @@ services:
     hostname: login
     extra_hosts:
       - "mlflow:172.19.0.2"
+
+  vpn:
+    image: "kylemanna/openvpn:latest"
+    container_name: vpn
+    ports:
+        - "1194:1194/udp"
+    volumes:
+        - "../conf/vpn:/etc/openvpn"
+#    command: |
+#      ovpn_genconfig -u udp://hello-datascience.com
+#      ovpn_initpki
+#      easyrsa build-client-full hello-datascience
+    cap_add:
+        - NET_ADMIN
+    restart: always
+    networks:
+      mlflow-subnet:
+        ipv4_address: 172.19.0.7
 
   ml:
     container_name: ml
