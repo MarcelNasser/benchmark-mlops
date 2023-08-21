@@ -3,13 +3,23 @@
 ---
 ### warning::
 
-**- destroy resources between deployments, to avoid collisions...**
+**- destroy resources between deployments, to avoid resources collisions...**
 
 ```bash
 docker compose -f compose_file down
 ```
 
-**- wrong arguments `mlflow server [args]` can corrupt remote database. it the main weakness of mlflow deployments.**
+**- if collision anyway, prune manually:**
+````bash
+# error
+[+] Running 1/0
+ ✘ Network compose_mlflow-subnet  Error                                                                                                                                                                                                                                                                                                                                                                                      0.0s 
+failed to create network compose_mlflow-subnet: Error response from daemon: Pool overlaps with other one on this address space
+# fix
+$ docker network prune
+````
+
+**- wrong arguments `mlflow server [args]` can corrupt remote database. it is the main weakness of mlflow deployments.**
 
 checkout the startup [scripts](../src/shared) to better understand the workaround done.
 

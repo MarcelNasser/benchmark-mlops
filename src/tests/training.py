@@ -1,3 +1,7 @@
+"""
+Test Training and Metric Logging
+"""
+
 import unittest
 from random import random, randint
 
