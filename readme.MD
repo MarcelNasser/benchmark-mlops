@@ -2,7 +2,7 @@
 
 ![example workflow](https://github.com/MarcelNasser/benchmark-mlops/actions/workflows/docker.yml/badge.svg)
 
----
+
 ## statement(s)
 
 we investigate the following:
@@ -13,7 +13,7 @@ we investigate the following:
 
 **" mlflow requires a remote deployment to be adopted by ML teams "**
 
----
+
 
 ## assumption(s)
 
@@ -33,7 +33,7 @@ we run deployment of `mlflow` on those remote file systems:
 | kv   | AWS S3    |
 
 
----
+
 
 ## deployment(s)
 
@@ -54,7 +54,7 @@ Basically, do this:
 docker compose -f .deploy/compose/single-az.yml up -d
 ````
 
----
+
 
 ## test(s)
 
