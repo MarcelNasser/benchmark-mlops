@@ -1,3 +1,4 @@
+import os
 import unittest
 import io
 import boto3
@@ -11,7 +12,7 @@ class TestS3(unittest.TestCase):
     client = boto3.client('s3',
                           aws_access_key_id='minio-access-key',
                           aws_secret_access_key='minio-secret-key',
-                          endpoint_url='http://localhost:9000', )
+                          endpoint_url=os.getenv('MLFLOW_HOST') )
 
     def test_read_write(self):
         check_bucket()

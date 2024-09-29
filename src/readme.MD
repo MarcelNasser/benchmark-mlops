@@ -21,7 +21,7 @@
 run test(s).
 
 ````
-python -m unittest src/tests/*.py
+python -m unittest src/tests/mlflow*.py
 ````
 
 ### Setup

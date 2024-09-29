@@ -1,7 +1,7 @@
 """
 Test Training and Metric Logging
 """
-
+import os
 import unittest
 from random import random, randint
 
@@ -13,10 +13,13 @@ from sklearn.ensemble import RandomForestRegressor
 
 class TestMlFlow(unittest.TestCase):
 
-    mlflow.set_tracking_uri("http://localhost:5000")
-
     def setUp(self) -> None:
+        # server URL
+        mlflow.set_tracking_uri(os.getenv('MLFLOW_URL'))
+        # spin logger
         mlflow.autolog()
+        # experiment
+        mlflow.set_experiment(os.getenv('MLFLOW_EXPERIMENT'))
 
     def test_metrics_logging(self):
         mlflow.log_param("config_value", randint(0, 100))
