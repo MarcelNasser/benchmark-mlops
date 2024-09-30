@@ -30,6 +30,24 @@ deploy mlflow service stack with guide below. check services are up before start
 
 ---
 
+**use development env of tesselite company**
+
+- create .env
+
+````bash
+# create .env file
+$ cp .env.tmpl .env
+````
+
+- add env url
+
+````cfg
+MLFLOW_URL=https://mlops.env1.tesselite.dev  # url here
+MLFLOW_EXPERIMENT=test-mlops-env1  # experiment ID
+````
+
+---
+
 **deploy services with docker compose:**
 ````bash
 $ docker compose -f .deploy/compose/single-az.yml up -d

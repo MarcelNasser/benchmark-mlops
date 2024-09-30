@@ -1,0 +1,73 @@
+services:
+  sg:
+    image: lscr.io/linuxserver/swag:latest
+    container_name: sg
+    cap_add:
+      - NET_ADMIN
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Etc/UTC
+      - URL=mlops.env1.tesselite.dev
+      - VALIDATION=http
+      - CERTPROVIDER= #optional
+      - DNSPLUGIN=cloudflare #optional
+      - PROPAGATION= #optional
+      - EMAIL=marcel.ndeffo@gmail.com #optional
+      - ONLY_SUBDOMAINS=false #optional
+      - STAGING=false #optional
+    volumes:
+      - /home/contact/tls:/config
+    ports:
+      - 443:443
+      - 80:80 #optional
+    restart: unless-stopped
+    extra_hosts:
+      - "mlflow:172.19.0.2"
+    networks:
+      mlflow-subnet:
+        ipv4_address: 172.19.0.4
+
+  ml:
+    container_name: ml
+    extends:
+      service: .mlflow
+      file: template.yml
+    volumes:
+      - fs:/data
+      - ${GOOGLE_APPLICATION_CREDENTIALS}:/secrets/storage-sa.json
+    ports:
+      - "5000:5000"
+    extra_hosts:
+      - "minio:172.19.0.4"
+      - "postgres:172.19.0.3"
+    networks:
+      mlflow-subnet:
+        ipv4_address: 172.19.0.2
+    depends_on: [ pg ]
+    environment:
+      DB: "postgresql://postgres:postgres@postgres:5432/postgres"
+      GCS: "gs://mlops-fs-tesselite-dev/env-test"
+      GOOGLE_APPLICATION_CREDENTIALS: "/secrets/storage-sa.json"
+
+  pg:
+    extends:
+      service: .db
+      file: template.yml
+    volumes:
+      - db:/var/lib/postgresql/data
+    networks:
+      mlflow-subnet:
+        ipv4_address: 172.19.0.3
+
+
+networks:
+  mlflow-subnet:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.19.0.0/24
+
+volumes:
+  db:
+  fs:

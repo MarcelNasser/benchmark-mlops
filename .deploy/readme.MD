@@ -30,7 +30,8 @@ checkout the startup [scripts](../src/shared) to better understand the workaroun
 |-----------------|------------|----------|----------------------------------------------------------|
 | k8s             | S3         | 1+       | src/shared/minikube.sh start                             |
 | local           | local      | 1        | docker compose -f .deploy/compose/local.yml up           |
-| local-gcs       | gcs        | 1        | docker compose -f .deploy/compose/local-gcs.yml up       |
+| single-az-tls       | gcs        | 1        | docker compose -f .deploy/compose/single-az-tls.yml up       |
+| single-az-gcs       | gcs        | 1        | docker compose -f .deploy/compose/single-az-gcs.yml up       |
 | single-az       | S3         | 1        | docker compose -f .deploy/compose/single-az.yml up       |
 | single-az-auth0 | S3         | 1        | docker compose -f .deploy/compose/single-az-auth0.yml up |
 | multi-az        | S3         | 2        | docker compose -f .deploy/compose/multi-az.yml up        |
@@ -72,15 +73,39 @@ docker compose -f .deploy/compose/local.yml up -d
 
 ---
 
-### deploy `local-gcs`:: 
+### deploy `single-az-gcs`:: 
 
 - *desc*: spin a development mlflow connected to remote bucket.
 - *scenarios*:
   1. exploration of `mlflow` features
   2. development new features for `mlflow` in google cloud
+  3. explore performance issues of `mlflow`
+- *requirements*:
+  1. google cloud service account
+  2. service account's permissions: gcloud storage object admin + cloud.bucket.get
 
 ````bash
-GOOGLE_APPLICATION_CREDENTIALS=path_to_service_account_key docker compose -f .deploy/compose/local-gcs.yml up -d
+GOOGLE_APPLICATION_CREDENTIALS=path_to_service_account_key docker compose -f .deploy/compose/single-az-gcs.yml up -d
+````
+
+---
+
+### deploy `single-az-tls`:: 
+
+- *desc*: spin a development mlflow connected to remote bucket.
+- *scenarios*:
+  1. exploration of `mlflow` features
+  2. development new features for `mlflow` in google cloud
+  3. explore performance issues of `mlflow`
+  4. secure communication with `mlflow` with TLS
+- *requirements*:
+  1. google cloud service account
+  2. service account's permissions: gcloud storage object admin + cloud.bucket.get
+  3. dns directed to external IP
+  4. replace letsencrypt config/nginx/site-confs/default.conf with [./conf/nginx/swag-site.conf](conf/nginx/swag-site.conf)
+
+````bash
+GOOGLE_APPLICATION_CREDENTIALS=path_to_service_account_key docker compose -f .deploy/compose/single-az-tls.yml up -d
 ````
 
 ---
