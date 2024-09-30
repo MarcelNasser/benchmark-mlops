@@ -2,8 +2,11 @@ services:
   ml:
     container_name: ml
     extends:
-      service: .mlflow-s3
+      service: .mlflow
       file: template.yml
+    volumes:
+      - fs:/data
+      - ${GOOGLE_APPLICATION_CREDENTIALS}:/secrets/storage-sa.json
     ports:
       - "5000:5000"
     extra_hosts:
@@ -12,11 +15,11 @@ services:
     networks:
       mlflow-subnet:
         ipv4_address: 172.19.0.2
-    depends_on: [ pg, s3 ]
+    depends_on: [ pg ]
     environment:
-      S3: "s3://ml-artifacts/mlflow"
-      MLFLOW_S3_ENDPOINT_URL: "http://minio:9000"
       DB: "postgresql://postgres:postgres@postgres:5432/postgres"
+      GCS: "gs://mlops-fs-tesselite-dev/env-test"
+      GOOGLE_APPLICATION_CREDENTIALS: "/secrets/storage-sa.json"
 
   pg:
     extends:
@@ -28,22 +31,6 @@ services:
       mlflow-subnet:
         ipv4_address: 172.19.0.3
 
-  s3:
-    hostname: minio
-    container_name: minio
-    image: quay.io/minio/minio
-    ports:
-      - "9001:9001"
-      - "9000:9000"
-    environment:
-      MINIO_ROOT_USER: minio-access-key
-      MINIO_ROOT_PASSWORD: minio-secret-key
-    volumes:
-      - "s3:/data"
-    networks:
-      mlflow-subnet:
-        ipv4_address: 172.19.0.4
-    command: ["server", "/data --console-address ':9001'"]
 
 networks:
   mlflow-subnet:
@@ -54,4 +41,4 @@ networks:
 
 volumes:
   db:
-  s3:
+  fs:

@@ -7,8 +7,8 @@ import botocore.exceptions
 import boto3
 from retry import retry
 
-logger = getLogger("datapipelines")
 basicConfig(level=INFO, format="%(levelname)s: %(message)s")
+logger = getLogger("mlops")
 
 bucket_name = os.environ.get("BUCKET", "ml-artifacts")
 object_name = "mlflow/hello-world"

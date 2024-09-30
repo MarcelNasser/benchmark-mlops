@@ -30,6 +30,7 @@ checkout the startup [scripts](../src/shared) to better understand the workaroun
 |-----------------|------------|----------|----------------------------------------------------------|
 | k8s             | S3         | 1+       | src/shared/minikube.sh start                             |
 | local           | local      | 1        | docker compose -f .deploy/compose/local.yml up           |
+| local-gcs       | gcs        | 1        | docker compose -f .deploy/compose/local-gcs.yml up       |
 | single-az       | S3         | 1        | docker compose -f .deploy/compose/single-az.yml up       |
 | single-az-auth0 | S3         | 1        | docker compose -f .deploy/compose/single-az-auth0.yml up |
 | multi-az        | S3         | 2        | docker compose -f .deploy/compose/multi-az.yml up        |
@@ -67,6 +68,19 @@ time python -m unittest src/tests/training.py 2>/dev/null
 
 ````bash
 docker compose -f .deploy/compose/local.yml up -d
+````
+
+---
+
+### deploy `local-gcs`:: 
+
+- *desc*: spin a development mlflow connected to remote bucket.
+- *scenarios*:
+  1. exploration of `mlflow` features
+  2. development new features for `mlflow` in google cloud
+
+````bash
+GOOGLE_APPLICATION_CREDENTIALS=path_to_service_account_key docker compose -f .deploy/compose/local-gcs.yml up -d
 ````
 
 ---
