@@ -1,5 +1,3 @@
-version: "3.5"
-
 services:
   ml-1:
     container_name: ml-1
