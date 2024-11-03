@@ -1,31 +1,36 @@
-# redirect all traffic to https
-server {
-    listen 80 default_server;
-    listen [::]:80 default_server;
-
-    location / {
-        return 301 https://$host$request_uri;
-    }
+events {
+    worker_connections  4096;  ## Default: 1024
 }
+http {
+    # redirect all traffic to https
+    server {
+        listen 80 default_server;
+        listen [::]:80 default_server;
 
-# main server block
-server {
-    listen 443 ssl default_server;
-    listen [::]:443 ssl default_server;
-
-    server_name _;
-
-    include /config/nginx/ssl.conf;
-
-    location / {
-        set $upstream_app mlflow;
-        set $upstream_port 5000;
-        set $upstream_proto http;
-        proxy_pass $upstream_proto://$upstream_app:$upstream_port;
+        location / {
+            return 301 https://$host$request_uri;
+        }
     }
-}
 
-# enable subdomain method reverse proxy confs
-include /config/nginx/proxy-confs/*.subdomain.conf;
-# enable proxy cache for auth
-proxy_cache_path cache/ keys_zone=auth_cache:10m;
+    # main server block
+    server {
+        listen 443 ssl default_server;
+        listen [::]:443 ssl default_server;
+
+        server_name _;
+
+        include /config/nginx/ssl.conf;
+
+        location / {
+            set $upstream_app mlflow;
+            set $upstream_port 5000;
+            set $upstream_proto http;
+            proxy_pass $upstream_proto://$upstream_app:$upstream_port;
+        }
+    }
+
+    # enable subdomain method reverse proxy confs
+    include /config/nginx/proxy-confs/*.subdomain.conf;
+    # enable proxy cache for auth
+    proxy_cache_path cache/ keys_zone=auth_cache:10m;
+}
