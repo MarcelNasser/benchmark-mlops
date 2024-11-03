@@ -37,6 +37,7 @@ services:
       - "../conf/nginx/dev-tls.nginx:/etc/nginx/site-confs/default.conf:ro"
     ports:
       - 443:443
+      - 80:80
     networks:
       tesselite-dev:
         ipv4_address: 162.19.0.5
