@@ -86,7 +86,7 @@ services:
     container_name: lb
     image: nginx
     volumes:
-      - "../conf/nginx/base.nginx:/etc/nginx/site-confs/default.conf:ro"
+      - "../conf/nginx/base.nginx:/etc/nginx/nginx.conf:ro"
 
 
   .mlflow:
