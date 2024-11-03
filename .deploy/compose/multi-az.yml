@@ -38,6 +38,7 @@ services:
         ipv4_address: 172.30.0.5
     volumes:
       - "../conf/nginx/mlflow-ha.nginx:/etc/nginx/site-confs/default.conf:ro"
+      - "../conf/nginx/base.nginx:/etc/nginx/nginx.conf:ro"
     extra_hosts:
       - "ml-1:172.19.0.2"
       - "ml-2:172.30.0.2"

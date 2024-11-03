@@ -18,6 +18,7 @@ services:
       file: template.yml
     volumes:
       - "../conf/nginx/dev.nginx:/config/nginx/site-confs/dev.conf:ro"
+      - "../conf/nginx/base.nginx:/etc/nginx/nginx.conf:ro"
     ports:
       - "80:80"
     networks:
