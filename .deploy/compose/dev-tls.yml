@@ -34,9 +34,9 @@ services:
       - STAGING=false #optional
     volumes:
       - /home/contact/tls:/config
+      - "../conf/nginx/dev-tls.conf:/etc/nginx/conf.d/dev.conf:ro"
     ports:
       - 443:443
-      - 80:80 #optional
     networks:
       tesselite-dev:
         ipv4_address: 162.19.0.5
