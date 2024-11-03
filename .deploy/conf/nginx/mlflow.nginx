@@ -1,32 +1,27 @@
-events {
-    worker_connections  4096;  ## Default: 1024
+
+# redirect all traffic to https
+server {
+    listen 80 default_server;
+    listen [::]:80 default_server;
+
+    location / {
+        return 301 https://$host$request_uri;
+    }
 }
 
-http {
-    # redirect all traffic to https
-    server {
-        listen 80 default_server;
-        listen [::]:80 default_server;
+# main server block
+server {
+    listen 443 ssl default_server;
+    listen [::]:443 ssl default_server;
 
-        location / {
-            return 301 https://$host$request_uri;
-        }
-    }
+    server_name _;
 
-    # main server block
-    server {
-        listen 443 ssl default_server;
-        listen [::]:443 ssl default_server;
+    include /config/nginx/ssl.conf;
 
-        server_name _;
-
-        include /config/nginx/ssl.conf;
-
-        location / {
-            set $upstream_app mlflow;
-            set $upstream_port 5000;
-            set $upstream_proto http;
-            proxy_pass $upstream_proto://$upstream_app:$upstream_port;
-        }
+    location / {
+        set $upstream_app mlflow;
+        set $upstream_port 5000;
+        set $upstream_proto http;
+        proxy_pass $upstream_proto://$upstream_app:$upstream_port;
     }
 }
