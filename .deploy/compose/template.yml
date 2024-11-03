@@ -1,7 +1,64 @@
 services:
 
+  .dev:
+    hostname: dev
+    container_name: dev
+    image: marcelndeffo/tesselite:pythondev
+    restart: always
+    user: tesselite
+    command:
+      - jupyter
+      - lab
+      - "--port"
+      - "8001"
+      - "--ip"
+      - "162.19.0.2"
+      - "--token"
+      - "tesselite"
+      - "--allow_password_change"
+      - "False"
+    volumes:
+      - data:/home/tesselite
+      - bin:/usr/bin:ro
+    deploy:
+      resources:
+        limits:
+          cpus: "1.5"
+          memory: "1500MB"
+    logging:
+      options:
+        max-size: "10m"
+        max-file: "50"
+    healthcheck:
+      test: curl dev:8001 || exit 1
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 20s
+
+  .admin:
+    extends: .dev
+    container_name: admin
+    user: root
+    command:
+      - ttyd
+      - "-p"
+      - "8002"
+      - "-c"
+      - "root:tesselite"
+      - "-b"
+      - "/admin"
+      - bash
+    healthcheck:
+      test: curl admin:8002 || exit 1
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 20s
+
   .base:
     restart: always
+    hostname: admin
     deploy:
       resources:
         limits:
@@ -11,6 +68,7 @@ services:
       options:
         max-size: "10m"
         max-file: "50"
+
 
   .db:
     extends:
@@ -31,12 +89,6 @@ services:
       - "5000:80"
     volumes:
       - "../conf/nginx/nginx.conf:/etc/nginx/conf.d/default.conf:ro"
-    healthcheck:
-      test: curl ml-1:5000 || exit 1; curl ml-2:5000|| exit 1
-      interval: 10s
-      timeout: 5s
-      retries: 3
-      start_period: 20s
 
 
   .mlflow:

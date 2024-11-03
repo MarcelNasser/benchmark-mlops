@@ -26,71 +26,25 @@ services:
     extra_hosts:
       - "admin:162.19.0.3"
       - "dev:162.19.0.2"
+    healthcheck:
+      test: curl dev.user0.tesselite.tech|| exit 1
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 20s
 
   dev:
-    hostname: dev.user0.tesselite.tech
-    container_name: dev
-    image: marcelndeffo/tesselite:pythondev
-    restart: always
-    user: tesselite
-    command:
-      - jupyter
-      - lab
-      - "--port"
-      - "8001"
-      - "--ip"
-      - "162.19.0.2"
-      - "--token"
-      - "tesselite"
-      - "--allow_password_change"
-      - "False"
-    volumes:
-      - data:/home/tesselite
-      - bin:/usr/bin:ro
-    ports:
-      - "8001:8001"
+    extends:
+      service: .dev
+      file: template.yml
     networks:
       tesselite-dev:
         ipv4_address: 162.19.0.2
-    deploy:
-      resources:
-        limits:
-          cpus: "1.5"
-          memory: "1500MB"
-    logging:
-      options:
-        max-size: "10m"
-        max-file: "50"
 
   admin:
-    hostname: dev.user0.tesselite.tech
-    container_name: admin
-    image: marcelndeffo/tesselite:pythondev
-    restart: always
-    user: root
-    command:
-      - ttyd
-      - "-p"
-      - "8002"
-      - "-c"
-      - "root:tesselite"
-      - "-b"
-      - "/admin"
-      - bash
-    volumes:
-      - data:/home/tesselite
-      - bin:/usr/bin
-    ports:
-      - "8002:8002"
+    extends:
+      service: .admin
+      file: template.yml
     networks:
       tesselite-dev:
         ipv4_address: 162.19.0.3
-    deploy:
-      resources:
-        limits:
-          cpus: "0.5"
-          memory: "500MB"
-    logging:
-      options:
-        max-size: "10m"
-        max-file: "50"

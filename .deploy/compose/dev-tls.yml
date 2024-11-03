@@ -46,10 +46,16 @@ services:
 
   dev:
     extends:
-      service: dev
-      file: dev.yml
+      service: .dev
+      file: template.yml
+    networks:
+      tesselite-dev:
+        ipv4_address: 162.19.0.2
 
   admin:
     extends:
-      service: admin
-      file: dev.yml
+      service: .admin
+      file: template.yml
+    networks:
+      tesselite-dev:
+        ipv4_address: 162.19.0.3
