@@ -18,8 +18,6 @@ services:
       file: template.yml
     ports:
       - "80:80"
-    volumes:
-      - "../conf/nginx/dev.nginx:/etc/nginx/mlflow.nginx:ro"
     networks:
       tesselite-dev:
         ipv4_address: 162.19.0.5

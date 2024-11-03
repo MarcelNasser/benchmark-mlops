@@ -38,8 +38,6 @@ services:
     extends:
       service: lb
       file: multi-az.yml
-    volumes:
-      - "../conf/nginx/mlflow.nginx:/etc/nginx/conf.d/default.conf:ro"
 
 
   pg:

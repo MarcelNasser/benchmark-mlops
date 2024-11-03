@@ -102,7 +102,7 @@ GOOGLE_APPLICATION_CREDENTIALS=path_to_service_account_key docker compose -f .de
   1. google cloud service account
   2. service account's permissions: gcloud storage object admin + cloud.bucket.get
   3. dns directed to external IP
-  4. replace letsencrypt config/nginx/site-confs/default.conf with [./conf/nginx/swag-site.conf](conf/nginx/mlflow-tls.nginx)
+  4. replace letsencrypt config/nginx/site-confs/default.conf with [./conf/nginx/swag-site.conf](conf/nginx/tls-mlflow.nginx)
 
 ````bash
 GOOGLE_APPLICATION_CREDENTIALS=path_to_service_account_key docker compose -f .deploy/compose/single-az-tls.yml up -d
