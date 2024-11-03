@@ -52,7 +52,7 @@ services:
       file: template.yml
     volumes:
       - fs:/data
-      - ${GOOGLE_APPLICATION_CREDENTIALS}:/secrets/storage-sa.json
+      - ./storage-sa.json:/secrets/storage-sa.json
     ports:
       - "5000:5000"
     extra_hosts:
