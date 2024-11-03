@@ -19,7 +19,7 @@ services:
     ports:
       - "80:80"
     volumes:
-      - "../conf/nginx/dev.nginx:/etc/nginx/nginx.conf:ro"
+      - "../conf/nginx/dev.nginx:/etc/nginx/mlflow.nginx:ro"
     networks:
       tesselite-dev:
         ipv4_address: 162.19.0.5

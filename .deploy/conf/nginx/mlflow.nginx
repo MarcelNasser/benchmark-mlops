@@ -1,27 +1,9 @@
-
-# redirect all traffic to https
-server {
-    listen 80 default_server;
-    listen [::]:80 default_server;
-
-    location / {
-        return 301 https://$host$request_uri;
-    }
+upstream loadbalancer {
+server 172.19.0.2:5000 weight=5;
+server 172.30.0.2:5000 weight=5;
 }
-
-# main server block
 server {
-    listen 443 ssl default_server;
-    listen [::]:443 ssl default_server;
-
-    server_name _;
-
-    include /config/nginx/ssl.conf;
-
-    location / {
-        set $upstream_app mlflow;
-        set $upstream_port 5000;
-        set $upstream_proto http;
-        proxy_pass $upstream_proto://$upstream_app:$upstream_port;
-    }
+location / {
+proxy_pass http://loadbalancer;
+}
 }
