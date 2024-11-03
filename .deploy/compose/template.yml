@@ -9,14 +9,11 @@ services:
     command:
       - jupyter
       - lab
-      - "--port"
-      - "8001"
-      - "--ip"
-      - "162.19.0.2"
-      - "--password"
-      - "tesselite"
-      - "--allow_password_change"
-      - "False"
+      - "--port=8001"
+      - "--ip=162.19.0.2"
+      - "--NotebookApp.token=tesselite"
+      - "--NotebookApp.password=''"
+      - "--NotebookApp.allow_password_change=False"
     volumes:
       - data:/home/tesselite
       - bin:/usr/bin:ro

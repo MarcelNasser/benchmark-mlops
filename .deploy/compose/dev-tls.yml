@@ -34,7 +34,7 @@ services:
       - STAGING=false #optional
     volumes:
       - /home/contact/tls:/config
-      - "../conf/nginx/dev-tls.nginx:/etc/config/site-confs/default.conf:ro"
+      - "../conf/nginx/dev-tls.nginx:/config/nginx/site-confs/default.conf:ro"
     ports:
       - 443:443
       - 80:80
@@ -44,6 +44,12 @@ services:
     extra_hosts:
       - "admin:162.19.0.3"
       - "dev:162.19.0.2"
+    healthcheck:
+      test: curl dev.user0.tesselite.tech|| exit 1
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 20s
 
   dev:
     extends:

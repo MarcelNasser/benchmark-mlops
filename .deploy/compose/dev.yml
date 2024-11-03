@@ -16,6 +16,8 @@ services:
     extends:
       service: .lb
       file: template.yml
+    volumes:
+      - "../conf/nginx/dev.nginx:/config/nginx/site-confs/dev.conf:ro"
     ports:
       - "80:80"
     networks:
