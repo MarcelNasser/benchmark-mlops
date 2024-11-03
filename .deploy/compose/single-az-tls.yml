@@ -21,7 +21,7 @@ services:
       - "../conf/nginx/mlflow.conf:/etc/nginx/conf.d/mlflow.conf:ro"
     ports:
       - 443:443
-      - 80:80 #optional
+      - 80:80
     restart: unless-stopped
     extra_hosts:
       - "mlflow:172.19.0.2"
@@ -36,11 +36,10 @@ services:
       file: template.yml
     volumes:
       - fs:/data
-      - ./storage-sa.json:/secrets/storage-sa.json
+      - ../../storage-sa.json:/secrets/storage-sa.json:ro
     ports:
       - "5000:5000"
     extra_hosts:
-      - "minio:172.19.0.4"
       - "postgres:172.19.0.3"
     networks:
       mlflow-subnet:
