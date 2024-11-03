@@ -18,7 +18,7 @@ services:
       - STAGING=false #optional
     volumes:
       - /home/contact/tls:/config
-      - "../conf/nginx/mlflow.nginx:/etc/nginx/conf.d/mlflow.conf:ro"
+      - "../conf/nginx/mlflow.nginx:/etc/nginx/nginx.conf:ro"
     ports:
       - 443:443
       - 80:80
