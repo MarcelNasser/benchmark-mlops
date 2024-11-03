@@ -34,7 +34,7 @@ services:
       - STAGING=false #optional
     volumes:
       - /home/contact/tls:/config
-      - "../conf/nginx/dev-tls.conf:/etc/nginx/conf.d/dev.conf:ro"
+      - "../conf/nginx/dev-tls.conf:/etc/nginx/conf.d/dev.nginx:ro"
     ports:
       - 443:443
     networks:
