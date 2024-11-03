@@ -24,7 +24,7 @@ services:
       - PUID=1000
       - PGID=1000
       - TZ=Etc/UTC
-      - URL=env1.mlops.tesselite.dev
+      - URL=dev.user0.tesselite.dev
       - VALIDATION=http
       - CERTPROVIDER= #optional
       - DNSPLUGIN=cloudflare #optional
