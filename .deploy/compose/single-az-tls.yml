@@ -8,7 +8,7 @@ services:
       - PUID=1000
       - PGID=1000
       - TZ=Etc/UTC
-      - URL=env1.mlops.tesselite.dev
+      - URL=dev.user0.tesselite.tech
       - VALIDATION=http
       - CERTPROVIDER= #optional
       - DNSPLUGIN=cloudflare #optional
@@ -18,6 +18,7 @@ services:
       - STAGING=false #optional
     volumes:
       - /home/contact/tls:/config
+      - "../conf/nginx/mlflow.conf:/etc/nginx/conf.d/mlflow.conf:ro"
     ports:
       - 443:443
       - 80:80 #optional
@@ -27,6 +28,22 @@ services:
     networks:
       mlflow-subnet:
         ipv4_address: 172.19.0.4
+
+  dev:
+    extends:
+      service: dev
+      file: dev.yml
+    networks:
+      mlflow-subnet:
+        ipv4_address: 172.19.0.10
+
+  admin:
+    extends:
+      service: admin
+      file: dev.yml
+    networks:
+      mlflow-subnet:
+        ipv4_address: 172.19.0.11
 
   ml:
     container_name: ml
