@@ -101,8 +101,8 @@ services:
     deploy:
       resources:
         limits:
-          cpus: "1.5"
-          memory: "2000MB"
+          cpus: "2"
+          memory: "4000MB"
 
   .mlflow-nfs:
     extends:
